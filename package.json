@@ -1,0 +1,37 @@
+{
+  "name": "spotify-mini-player",
+  "version": "1.0.0",
+  "description": "A Spotify mini-player overlay",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "author": "Your Name",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^13.0.0",
+    "electron-builder": "^22.11.7"
+  },
+  "dependencies": {
+    "spotify-web-api-node": "^5.0.2"
+  },
+  "build": {
+    "appId": "com.yourname.spotifyminiplayerapp",
+    "mac": {
+      "category": "public.app-category.music"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage"
+    },
+    "protocols": {
+      "name": "spotify-mini-player-protocol",
+      "schemes": [
+        "spotify-mini-player"
+      ]
+    }
+  }
+}
