@@ -26,16 +26,32 @@
             right: 0;
             height: 20px;
             -webkit-app-region: drag;
-            background-color: rgba(0, 0, 0, 0.3);
+            background-color: rgba(0, 0, 0, 0);
         }
         #player {
             display: flex;
             flex-grow: 1;
+            align-items: center;
+        }
+        #track-info {
+            text-align: center;
+            margin-bottom: 5px;
+            font-size: 4vw;
+        }
+
+        #track-name {
+            font-weight: bold;
+            color: white;
+        }
+
+        #artist-name {
+            font-size: 3vw;
+            color: #ccc;
         }
         #album-cover-container {
             position: relative;
-            width: 100%;
-            height: 100%;
+            width: 100px;
+            height: 100px;
         }
         #album-cover {
             width: 100%;
@@ -47,23 +63,32 @@
             display: none;
             width: 0;
             background: rgba(0,0,0,0.7);
-            padding: 10px;
             overflow: hidden;
             transition: all 0.3s ease;
         }
         #controls.expanded {
             display: flex;
             flex-direction: column;
-            width: 200px;
+            flex-grow: 1;
+            height: auto;
+            padding: 5px;
+        }
+        #button-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 5px;
         }
         button {
-            margin: 5px 0;
+            margin: 0 5px;
             padding: 5px 10px;
             background-color: #1DB954;
             color: white;
             border: none;
             border-radius: 20px;
             cursor: pointer;
+            font-size: 4vw;
         }
         button:hover {
             background-color: #1ED760;
@@ -74,11 +99,18 @@
             left: 50%;
             transform: translate(-50%, -50%);
         }
+        #progress-volume-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
         #progress-bar {
             width: 100%;
             height: 5px;
             background-color: #333;
-            margin-top: 10px;
+            margin-bottom: 10px;
             cursor: pointer;
         }
         #progress {
@@ -88,7 +120,7 @@
         }
         #volume-control {
             width: 100%;
-            margin-top: 10px;
+            margin-bottom: 3px;
         }
     </style>
 </head>
@@ -100,17 +132,24 @@
                 <img id="album-cover" src="https://via.placeholder.com/300" alt="Album Cover">
             </div>
             <div id="controls">
-                <button id="previous">⏮</button>
-                <button id="play-pause">⏯</button>
-                <button id="next">⏭</button>
-                <button id="shuffle">🔀</button>
-                <button id="repeat">🔁</button>
-                <div id="progress-bar">
-                    <div id="progress"></div>
+                <div id="track-info">
+                    <div id="track-name"></div>
+                    <div id="artist-name"></div>
                 </div>
-                <input type="range" id="volume-control" min="0" max="100" value="100">
+                <div id="button-container">
+                    <button id="previous">⏮</button>
+                    <button id="play-pause">⏯</button>
+                    <button id="next">⏭</button>
+                    <button id="shuffle">🔀</button>
+                    <button id="repeat">🔁</button>
+                </div>
+                <div id="progress-volume-container">
+                    <div id="progress-bar">
+                        <div id="progress"></div>
+                    </div>
+                    <input type="range" id="volume-control" min="0" max="100" value="100">
+                </div>
             </div>
-        </div>
     </div>
     <button id="login-button">Login to Spotify</button>
     <script src="renderer.js"></script>
