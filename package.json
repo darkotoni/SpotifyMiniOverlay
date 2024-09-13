@@ -7,17 +7,18 @@
     "start": "electron .",
     "build": "electron-builder"
   },
-  "author": "Your Name",
+  "author": "Darian",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^13.0.0",
-    "electron-builder": "^22.11.7"
+    "electron": "^32.1.0",
+    "electron-builder": "^25.0.5",
+    "electron-packager": "^17.1.2"
   },
   "dependencies": {
     "spotify-web-api-node": "^5.0.2"
   },
   "build": {
-    "appId": "com.yourname.spotifyminiplayerapp",
+    "appId": "com.Darian.spotifyminiplayerapp",
     "mac": {
       "category": "public.app-category.music"
     },

@@ -21,15 +21,13 @@ albumCover.addEventListener('click', (event) => {
 });
 
 function toggleExpansion() {
-    console.log('toggleExpansion called. Current state:', isExpanded);
     isExpanded = !isExpanded;
-    console.log('New state:', isExpanded);
     if (isExpanded) {
-        console.log('Expanding player');
         controls.classList.add('expanded');
+        ipcRenderer.send('resize-window', 350, 120); 
     } else {
-        console.log('Collapsing player');
         controls.classList.remove('expanded');
+        ipcRenderer.send('resize-window', 100, 100); 
     }
 }
 
@@ -86,6 +84,10 @@ async function updateCurrentTrack() {
             updateProgress(response.body.progress_ms, response.body.item.duration_ms);
             albumCover.style.display = 'block';
             loginButton.style.display = 'none';
+
+            // Update track information
+            document.getElementById('track-name').textContent = response.body.item.name;
+            document.getElementById('artist-name').textContent = response.body.item.artists[0].name;
         }
     } catch (error) {
         console.error('Error updating current track:', error);
@@ -116,11 +118,9 @@ window.addEventListener('resize', () => {
     const containerHeight = container.clientHeight;
 
     if (containerWidth / containerHeight > aspectRatio) {
-        // Container is wider than it is tall
         player.style.width = `${containerHeight * aspectRatio}px`;
         player.style.height = '100%';
     } else {
-        // Container is taller than it is wide
         player.style.width = '100%';
         player.style.height = `${containerWidth / aspectRatio}px`;
     }
