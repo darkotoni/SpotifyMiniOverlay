@@ -6,9 +6,9 @@ const startAuthServer = require('./authServer')
 
 // Spotify API credentials
 const spotifyApi = new SpotifyWebApi({
-  clientId: '36a5b18c854343eea8304d945b271249',
-  clientSecret: 'f53fdad81df64e8bb4ac926ce35c35b3',
-  redirectUri: 'http://localhost:8888/callback'
+  clientId: '....',
+  clientSecret: '....',
+  redirectUri: '...'
 });
 
 let mainWindow;
