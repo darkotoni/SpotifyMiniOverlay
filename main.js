@@ -2,16 +2,18 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const { shell } = require('electron');
 const path = require('path');
 const SpotifyWebApi = require('spotify-web-api-node');
-const startAuthServer = require('./authServer')
+const startAuthServer = require('./authServer');
+require('dotenv').config(); // Load environment variables
 
-// Spotify API credentials
+// Spotify API credentials from environment variables
 const spotifyApi = new SpotifyWebApi({
-  clientId: '...',
-  clientSecret: ',...',
-  redirectUri: '...'
+  clientId: process.env.SPOTIFY_CLIENT_ID,
+  clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
+  redirectUri: process.env.SPOTIFY_REDIRECT_URI || 'http://localhost:8888/callback'
 });
 
 let mainWindow;
+let refreshTokenInterval;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -34,7 +36,6 @@ function createWindow() {
   mainWindow.setVisibleOnAllWorkspaces(true);
 }
 
-
 app.whenReady().then(() => {
   createWindow();
 
@@ -47,12 +48,14 @@ app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit();
 });
 
-// Handle Spotify API requests
+// Handle Spotify API requests with improved error handling
 ipcMain.handle('spotify-api', async (event, action, value) => {
   try {
     switch (action) {
       case 'getCurrentTrack':
         return await spotifyApi.getMyCurrentPlayingTrack();
+      case 'getMyCurrentPlaybackState':
+        return await spotifyApi.getMyCurrentPlaybackState();
       case 'next':
         return await spotifyApi.skipToNext();
       case 'previous':
@@ -74,10 +77,22 @@ ipcMain.handle('spotify-api', async (event, action, value) => {
         return await spotifyApi.seek(position);
       case 'setVolume':
         return await spotifyApi.setVolume(parseInt(value));
+      default:
+        return { error: 'Unknown action' };
     }
   } catch (error) {
     console.error('Error in Spotify API request:', error);
-    return { error: error.message };
+    
+    // More descriptive error handling
+    if (error.statusCode === 401) {
+      return { error: 'Authentication error. Please login again.', code: 401 };
+    } else if (error.statusCode === 404) {
+      return { error: 'No active Spotify device found. Please start Spotify on any device.', code: 404 };
+    } else if (error.statusCode === 403) {
+      return { error: 'Premium account required for this action.', code: 403 };
+    } else {
+      return { error: error.message || 'Unknown error occurred', code: error.statusCode };
+    }
   }
 });
 
@@ -89,29 +104,74 @@ ipcMain.handle('authenticate', async () => {
   shell.openExternal(authorizeURL);
 });
 
-// Handle the callback from Spotify
-app.on('open-url', async (event, url) => {
-  const code = new URL(url).searchParams.get('code');
-  try {
-    const data = await spotifyApi.authorizationCodeGrant(code);
-    spotifyApi.setAccessToken(data.body['access_token']);
-    spotifyApi.setRefreshToken(data.body['refresh_token']);
-    mainWindow.webContents.send('authenticated');
-  } catch (error) {
-    console.error('Error during authentication:', error);
-  }
-  // Set up protocol for handling callback
+// Set up protocol for handling callback
 app.setAsDefaultProtocolClient('spotify-mini-player');
 
-// Handle deep linking
-app.on('second-instance', (event, commandLine, workingDirectory) => {
-  const url = commandLine.pop();
+// Extract the function for handling the callback
+function handleCallback(url) {
+  if (!url) return;
+  
+  // Extract the code parameter from the URL
+  const urlObj = new URL(url);
+  const code = urlObj.searchParams.get('code');
+  
+  if (code) {
+    spotifyApi.authorizationCodeGrant(code).then(
+      function(data) {
+        console.log('The token expires in ' + data.body['expires_in']);
+        spotifyApi.setAccessToken(data.body['access_token']);
+        spotifyApi.setRefreshToken(data.body['refresh_token']);
+        mainWindow.webContents.send('authenticated');
+        
+        // Start token refresh interval
+        startTokenRefreshInterval();
+      },
+      function(err) {
+        console.error('Something went wrong with the callback:', err);
+        mainWindow.webContents.send('auth-error', err.message);
+      }
+    );
+  }
+}
+
+// Handle the callback from Spotify
+app.on('open-url', async (event, url) => {
+  event.preventDefault();
   handleCallback(url);
 });
-// Set up token refresh
-let refreshTokenInterval;
 
+// Handle deep linking for when the app is already running
+app.on('second-instance', (event, commandLine, workingDirectory) => {
+  // Someone tried to run a second instance, focus our window instead
+  if (mainWindow) {
+    if (mainWindow.isMinimized()) mainWindow.restore();
+    mainWindow.focus();
+    
+    // Check if there's a URL in the arguments
+    const url = commandLine.find(arg => arg.startsWith('spotify-mini-player://'));
+    if (url) {
+      handleCallback(url);
+    }
+  }
+});
+
+// If we're on macOS, we need to wait for the 'open-url' event which is fired when
+// your app is opened with a URL
+if (process.platform === 'darwin') {
+  app.on('will-finish-launching', () => {
+    app.on('open-url', (event, url) => {
+      event.preventDefault();
+      handleCallback(url);
+    });
+  });
+}
+
+// Token refresh function
 function startTokenRefreshInterval() {
+  if (refreshTokenInterval) {
+    clearInterval(refreshTokenInterval);
+  }
+  
   // Refresh token every 50 minutes (3000000 ms)
   refreshTokenInterval = setInterval(async () => {
     try {
@@ -120,16 +180,12 @@ function startTokenRefreshInterval() {
       console.log('Access token has been refreshed');
     } catch (error) {
       console.error('Could not refresh access token', error);
+      mainWindow.webContents.send('auth-error', 'Session expired. Please login again.');
     }
   }, 3000000);
 }
 
-// Start the token refresh interval after successful authentication
-ipcMain.on('authentication-successful', () => {
-  startTokenRefreshInterval();
-});
-});
-
+// Handle window resizing
 ipcMain.on('resize-window', (event, width, height) => {
-    mainWindow.setSize(width, height);
+  mainWindow.setSize(width, height);
 });
