@@ -13,15 +13,6 @@ A lightweight, always-on-top mini player for Spotify that stays out of your way.
 
 ## Installation
 
-### Windows
-
-1. Download the installer from the releases page
-2. Run the installer and follow the prompts
-3. The application will be installed and added to your Start Menu
-
-### Portable Version
-
-If you prefer not to install:
 1. Download the portable `.exe` file from the releases page
 2. Double-click to run (no installation required)
 
