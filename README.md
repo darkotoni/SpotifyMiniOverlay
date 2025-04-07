@@ -1,4 +1,54 @@
-# SpotifyMiniOverlay
-makes an overlay for spotify thats small, when clicked on, expands to have options such as skip, shuffle, play, volume control, and loop.
-It will ask for login, after logging in and giving auth. play music from spotify on web player/desktop app and it will update, click on icon to make small.
-https://drive.google.com/file/d/1vFqcxlf4EIvEXSPAvNTnceP5s6zY6UDv/view?usp=sharing
+# Spotify Mini Player
+
+A lightweight, always-on-top mini player for Spotify that stays out of your way.
+
+## Features
+
+- Minimal design that only shows album art until expanded
+- Always-on-top overlay that works with any application
+- Full playback controls (play/pause, skip, shuffle, repeat)
+- Volume control with visual indicator
+- Track progress bar
+- Displays current track and artist information
+
+## Installation
+
+### Windows
+
+1. Download the installer from the releases page
+2. Run the installer and follow the prompts
+3. The application will be installed and added to your Start Menu
+
+### Portable Version
+
+If you prefer not to install:
+1. Download the portable `.exe` file from the releases page
+2. Double-click to run (no installation required)
+
+## Usage
+
+1. Launch the application
+2. Click "Login to Spotify" to authenticate with your Spotify account
+3. Make sure Spotify is running on at least one of your devices
+4. Click the album art to expand/collapse the player
+5. Use the controls to manage your Spotify playback
+
+## Requirements
+
+- A Spotify account (Free or Premium)
+- An active Spotify session on at least one device (desktop app, web player, mobile, etc.)
+- Note: Some features may require Spotify Premium
+
+## Troubleshooting
+
+- **No active device found**: Make sure Spotify is running on at least one of your devices
+- **Authentication error**: Try logging in again
+- **Controls not working**: Some controls require a Spotify Premium subscription
+
+## Privacy
+
+This app communicates directly with Spotify's API. Your login credentials are handled by Spotify's authentication system and are never stored by this application.
+
+## Credits
+
+Created by Darian

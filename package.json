@@ -5,7 +5,10 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder"
+    "build": "electron-builder",
+    "build-win": "electron-builder --win",
+    "build-mac": "electron-builder --mac",
+    "build-linux": "electron-builder --linux"
   },
   "author": "Darian",
   "license": "ISC",
@@ -15,19 +18,56 @@
     "electron-packager": "^17.1.2"
   },
   "dependencies": {
-    "dotenv": "^16.4.7",
+    "dotenv": "^16.4.1",
     "spotify-web-api-node": "^5.0.2"
   },
   "build": {
     "appId": "com.Darian.spotifyminiplayerapp",
+    "productName": "Spotify Mini Player",
+    "files": [
+      "**/*",
+      "!**/.git",
+      "!**/.vscode",
+      "!build{,/**/*}",
+      "!dist{,/**/*}",
+      "!node_modules{,/**/*}"
+    ],
+    "extraResources": [
+      {
+        "from": "node_modules",
+        "to": "node_modules",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable"
+        }
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true
+    },
     "mac": {
+      "target": "dmg",
+      "icon": "build/icon.png",
       "category": "public.app-category.music"
     },
-    "win": {
-      "target": "nsis"
-    },
     "linux": {
-      "target": "AppImage"
+      "target": "AppImage",
+      "icon": "build/icon.png"
     },
     "protocols": {
       "name": "spotify-mini-player-protocol",

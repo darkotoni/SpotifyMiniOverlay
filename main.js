@@ -3,13 +3,13 @@ const { shell } = require('electron');
 const path = require('path');
 const SpotifyWebApi = require('spotify-web-api-node');
 const startAuthServer = require('./authServer');
-require('dotenv').config(); // Load environment variables
+const config = require('./config');
 
-// Spotify API credentials from environment variables
+// Spotify API credentials from config
 const spotifyApi = new SpotifyWebApi({
-  clientId: process.env.SPOTIFY_CLIENT_ID,
-  clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-  redirectUri: process.env.SPOTIFY_REDIRECT_URI || 'http://localhost:8888/callback'
+  clientId: config.clientId,
+  clientSecret: config.clientSecret,
+  redirectUri: config.redirectUri
 });
 
 let mainWindow;
