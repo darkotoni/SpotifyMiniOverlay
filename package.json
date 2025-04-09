@@ -1,10 +1,11 @@
 {
   "name": "spotify-mini-player",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Spotify mini-player overlay",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
+    "start": "set NODE_ENV=development && electron .",
+    "start-mac": "NODE_ENV=development electron .",
     "clean": "rimraf dist",
     "generate-icons": "electron-icon-builder --input=./app-icon.png --output=./build",
     "build": "rimraf dist && electron-builder",
@@ -31,6 +32,8 @@
     },
     "files": [
       "**/*",
+      "authServer.js",
+      "config.js",
       "!**/.git",
       "!**/.vscode",
       "!build{,/**/*}",
@@ -42,32 +45,21 @@
         "to": "ffmpeg.dll"
       }
     ],
-    "extraResources": [
-      "./config.js",
-      "./authServer.js",
-      "./index.html",
-      "./node_modules/spotify-web-api-node/**/*",
-      "./node_modules/dotenv/**/*"
-    ],
     "asar": true,
-    "asarUnpack": [
-      "**/*.dll",
-      "**/*.node"
-    ],
     "win": {
-    "target": [
-      {
-        "target": "nsis",
-        "arch": [
-          "x64"
-        ]
-      },
-      {
-        "target": "portable"
-      }
-    ],
-    "sign": null
-  },
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable"
+        }
+      ],
+      "sign": null
+    },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,

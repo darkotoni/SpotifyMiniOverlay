@@ -19,10 +19,11 @@ A lightweight, always-on-top mini player for Spotify that stays out of your way.
 ## Usage
 
 1. Launch the application
-2. Click "Login to Spotify" to authenticate with your Spotify account
-3. Make sure Spotify is running on at least one of your devices
-4. Click the album art to expand/collapse the player
-5. Use the controls to manage your Spotify playback
+2. Allow private and public networks
+3. Click "Login to Spotify" to authenticate with your Spotify account
+4. Make sure Spotify is running on at least one of your devices
+5. Click the album art to expand/collapse the player
+6. Use the controls to manage your Spotify playback
 
 ## Requirements
 

@@ -2,8 +2,12 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const { shell } = require('electron');
 const path = require('path');
 const SpotifyWebApi = require('spotify-web-api-node');
-const startAuthServer = require('./authServer');
-const config = require('./config');
+const startAuthServer = process.env.NODE_ENV === 'production' 
+  ? require(path.join(process.resourcesPath, 'authServer.js'))
+  : require('./authServer');
+  const config = process.env.NODE_ENV === 'production'
+  ? require(path.join(process.resourcesPath, 'config.js'))
+  : require('./config');
 
 // Spotify API credentials from config
 const spotifyApi = new SpotifyWebApi({
