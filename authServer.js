@@ -1,4 +1,3 @@
-// Save this as authServer.js in your project root
 
 const http = require('http');
 const url = require('url');

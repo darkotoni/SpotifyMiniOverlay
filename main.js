@@ -24,13 +24,14 @@ function createWindow() {
     frame: false,
     transparent: true,
     alwaysOnTop: true,
-    resizable: true, 
+    resizable: true,
+    icon: path.join(__dirname, 'build/icon.ico'), // Add this line
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false
     }
   });
-
+  
   mainWindow.loadFile('index.html');
   mainWindow.setAlwaysOnTop(true, 'floating');
   mainWindow.setVisibleOnAllWorkspaces(true);

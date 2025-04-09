@@ -5,10 +5,12 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder",
-    "build-win": "electron-builder --win",
-    "build-mac": "electron-builder --mac",
-    "build-linux": "electron-builder --linux"
+    "clean": "rimraf dist",
+    "generate-icons": "electron-icon-builder --input=./app-icon.png --output=./build",
+    "build": "rimraf dist && electron-builder",
+    "build-win": "rimraf dist && electron-builder --win",
+    "build-mac": "rimraf dist && electron-builder --mac",
+    "build-linux": "rimraf dist && electron-builder --linux"
   },
   "author": "Darian",
   "license": "ISC",
@@ -24,37 +26,48 @@
   "build": {
     "appId": "com.Darian.spotifyminiplayerapp",
     "productName": "Spotify Mini Player",
+    "directories": {
+      "buildResources": "build"
+    },
     "files": [
       "**/*",
       "!**/.git",
       "!**/.vscode",
       "!build{,/**/*}",
-      "!dist{,/**/*}",
-      "!node_modules{,/**/*}"
+      "!dist{,/**/*}"
     ],
-    "extraResources": [
+    "extraFiles": [
       {
-        "from": "node_modules",
-        "to": "node_modules",
-        "filter": [
-          "**/*"
-        ]
+        "from": "node_modules/electron/dist/ffmpeg.dll",
+        "to": "ffmpeg.dll"
       }
     ],
+    "extraResources": [
+      "./config.js",
+      "./authServer.js",
+      "./index.html",
+      "./node_modules/spotify-web-api-node/**/*",
+      "./node_modules/dotenv/**/*"
+    ],
+    "asar": true,
+    "asarUnpack": [
+      "**/*.dll",
+      "**/*.node"
+    ],
     "win": {
-      "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64"
-          ]
-        },
-        {
-          "target": "portable"
-        }
-      ],
-      "icon": "build/icon.ico"
-    },
+    "target": [
+      {
+        "target": "nsis",
+        "arch": [
+          "x64"
+        ]
+      },
+      {
+        "target": "portable"
+      }
+    ],
+    "sign": null
+  },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
